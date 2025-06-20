@@ -5,6 +5,7 @@ import { useWebAuthnStore } from './webauthn'
 export interface GeneratedPassword {
   service: string
   password: string
+  version: number
   generated: Date
   credentialId: string
 }
@@ -14,7 +15,7 @@ export const usePasswordStore = defineStore('passwords', () => {
   const isGenerating = ref(false)
   const lastError = ref<string | null>(null)
 
-  const generatePassword = async (serviceName: string): Promise<string | null> => {
+  const generatePassword = async (serviceName: string, version: number = 1): Promise<string | null> => {
     const webAuthnStore = useWebAuthnStore()
     
     if (!webAuthnStore.hasCredentials) {
@@ -27,7 +28,7 @@ export const usePasswordStore = defineStore('passwords', () => {
 
     try {
       const credential = webAuthnStore.primaryCredential!
-      const challenge = `YubiKeyPasswordGenerator-${serviceName}`
+      const challenge = `YubiKeyPasswordGenerator-${serviceName}-v${version}`
       
       const entropy = await webAuthnStore.getEntropy(credential.id, challenge)
       if (!entropy) {
@@ -35,27 +36,30 @@ export const usePasswordStore = defineStore('passwords', () => {
         return null
       }
 
-      const password = await generatePasswordFromEntropy(entropy, serviceName)
+      const password = await generatePasswordFromEntropy(entropy, serviceName, version)
       
       // Store generated password
       const generatedPassword: GeneratedPassword = {
         service: serviceName,
         password,
+        version,
         generated: new Date(),
         credentialId: credential.id
       }
       
-      // Update or add password
-      const existingIndex = passwords.value.findIndex(p => p.service === serviceName)
+      // Update or add password (replace if same service and version)
+      const existingIndex = passwords.value.findIndex(p => 
+        p.service === serviceName && p.version === version
+      )
       if (existingIndex >= 0) {
         passwords.value[existingIndex] = generatedPassword
       } else {
         passwords.value.unshift(generatedPassword)
       }
       
-      // Keep only last 50 passwords
-      if (passwords.value.length > 50) {
-        passwords.value = passwords.value.slice(0, 50)
+      // Keep only last 100 passwords
+      if (passwords.value.length > 100) {
+        passwords.value = passwords.value.slice(0, 100)
       }
       
       savePasswords()
@@ -70,49 +74,75 @@ export const usePasswordStore = defineStore('passwords', () => {
     return null
   }
 
-  const generatePasswordFromEntropy = async (entropy: Uint8Array, fullServiceName: string): Promise<string> => {
+  const generatePasswordFromEntropy = async (
+    entropy: Uint8Array, 
+    fullServiceName: string, 
+    version: number
+  ): Promise<string> => {
     // Extract service name (same logic as Python version)
     const parts = fullServiceName.split('.')
     const serviceName = parts.length > 1 ? parts[parts.length - 2] : fullServiceName
 
-    // Create seed data
+    // Create seed data with version included
     const serviceBytes = new TextEncoder().encode(serviceName)
-    const seedData = new Uint8Array(entropy.length + serviceBytes.length)
+    const versionBytes = new TextEncoder().encode(`v${version}`)
+    const seedData = new Uint8Array(entropy.length + serviceBytes.length + versionBytes.length)
     seedData.set(entropy)
     seedData.set(serviceBytes, entropy.length)
+    seedData.set(versionBytes, entropy.length + serviceBytes.length)
 
     // Generate main hash
     const hashBuffer = await crypto.subtle.digest('SHA-256', seedData)
     const mainHash = new Uint8Array(hashBuffer)
 
-    // Generate prefix (4 chars + dot)
-    const prefixSeed = new DataView(mainHash.buffer).getUint32(0, false)
-    const prefixChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
-    let prefix = ''
-    let seed = prefixSeed
-    for (let i = 0; i < 4; i++) {
-      prefix += prefixChars[seed % prefixChars.length]
-      seed = Math.floor(seed / prefixChars.length)
-    }
-    prefix += '.'
-
-    // Generate suffix
-    const suffixSeed = new DataView(mainHash.buffer).getUint32(4, false)
-    const allowedChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+=-`~[]\\{}|;\':",./<>?'
-    const remainingLength = Math.max(0, 20 - prefix.length - serviceName.length)
+    // Generate a 20-character password without service name
+    const allowedChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+=-[]{}|;:,.<>?'
     
-    let suffix = ''
-    seed = suffixSeed
-    for (let i = 0; i < remainingLength; i++) {
-      suffix += allowedChars[seed % allowedChars.length]
-      seed = Math.floor(seed / allowedChars.length)
+    let password = ''
+    let hashIndex = 0
+    
+    // Use hash bytes to generate password characters
+    for (let i = 0; i < 20; i++) {
+      // If we've used all hash bytes, generate a new hash
+      if (hashIndex >= mainHash.length) {
+        const newSeed = new Uint8Array(seedData.length + 1)
+        newSeed.set(seedData)
+        newSeed[seedData.length] = Math.floor(hashIndex / mainHash.length)
+        
+        const newHashBuffer = await crypto.subtle.digest('SHA-256', newSeed)
+        const newHash = new Uint8Array(newHashBuffer)
+        mainHash.set(newHash)
+        hashIndex = 0
+      }
+      
+      const charIndex = mainHash[hashIndex] % allowedChars.length
+      password += allowedChars[charIndex]
+      hashIndex++
     }
 
-    return `${prefix}${serviceName}${suffix}`
+    return password
+  }
+
+  const getPasswordVersions = (serviceName: string): GeneratedPassword[] => {
+    return passwords.value
+      .filter(p => p.service === serviceName)
+      .sort((a, b) => b.version - a.version)
+  }
+
+  const getLatestVersion = (serviceName: string): number => {
+    const versions = getPasswordVersions(serviceName)
+    return versions.length > 0 ? versions[0].version : 0
   }
 
   const clearPasswords = () => {
     passwords.value = []
+    savePasswords()
+  }
+
+  const removePassword = (service: string, version: number) => {
+    passwords.value = passwords.value.filter(p => 
+      !(p.service === service && p.version === version)
+    )
     savePasswords()
   }
 
@@ -127,6 +157,7 @@ export const usePasswordStore = defineStore('passwords', () => {
         const parsed = JSON.parse(saved)
         passwords.value = parsed.map((pwd: any) => ({
           ...pwd,
+          version: pwd.version || 1, // Default to version 1 for legacy passwords
           generated: new Date(pwd.generated)
         }))
       } catch (error) {
@@ -143,6 +174,9 @@ export const usePasswordStore = defineStore('passwords', () => {
     isGenerating,
     lastError,
     generatePassword,
-    clearPasswords
+    getPasswordVersions,
+    getLatestVersion,
+    clearPasswords,
+    removePassword
   }
 })
