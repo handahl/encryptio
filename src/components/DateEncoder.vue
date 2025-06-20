@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <div class="text-center">
-      <h2 class="text-3xl font-bold text-gray-900 mb-2">Date Encoder</h2>
-      <p class="text-gray-600 max-w-2xl mx-auto">
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Date Encoder</h2>
+      <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
         Encode and decode dates using XOR-based encoding with year-dependent operations.
         Creates compact 5-character representations of dates.
       </p>
@@ -12,11 +12,11 @@
     <div class="grid md:grid-cols-2 gap-6">
       <!-- Encode Section -->
       <div class="card">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Encode Date</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Encode Date</h3>
         
         <div class="space-y-4">
           <div>
-            <label for="encode-date" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="encode-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Date (DD.MM.YYYY or DD.MM.YY)
             </label>
             <input
@@ -30,7 +30,7 @@
           </div>
           
           <div v-if="encodedResult">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Encoded Result</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Encoded Result</label>
             <div class="password-display">
               {{ encodedResult }}
             </div>
@@ -42,19 +42,19 @@
             </button>
           </div>
           
-          <div v-if="encodeError" class="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-red-700 text-sm">{{ encodeError }}</p>
+          <div v-if="encodeError" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p class="text-red-700 dark:text-red-200 text-sm">{{ encodeError }}</p>
           </div>
         </div>
       </div>
 
       <!-- Decode Section -->
       <div class="card">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Decode Date</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Decode Date</h3>
         
         <div class="space-y-4">
           <div>
-            <label for="decode-string" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="decode-string" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Encoded String (5 characters)
             </label>
             <input
@@ -69,7 +69,7 @@
           </div>
           
           <div>
-            <label for="decode-year" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="decode-year" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Reference Year (for XOR reversal)
             </label>
             <input
@@ -80,13 +80,13 @@
               class="input-field"
               @input="decodeString"
             />
-            <p class="text-xs text-gray-500 mt-1">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
               The year when the date was encoded (defaults to current year)
             </p>
           </div>
           
           <div v-if="decodedResult">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Decoded Result</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Decoded Result</label>
             <div class="password-display">
               {{ decodedResult }}
             </div>
@@ -98,8 +98,8 @@
             </button>
           </div>
           
-          <div v-if="decodeError" class="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-red-700 text-sm">{{ decodeError }}</p>
+          <div v-if="decodeError" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p class="text-red-700 dark:text-red-200 text-sm">{{ decodeError }}</p>
           </div>
         </div>
       </div>
@@ -107,18 +107,18 @@
 
     <!-- Examples -->
     <div class="card">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Examples</h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Examples</h3>
       
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div
           v-for="example in examples"
           :key="example.date"
-          class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+          class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
           @click="useExample(example)"
         >
-          <div class="font-medium text-gray-900">{{ example.date }}</div>
-          <div class="font-mono text-sm text-primary-600">{{ example.encoded }}</div>
-          <div class="text-xs text-gray-500">{{ example.year }}</div>
+          <div class="font-medium text-gray-900 dark:text-gray-100">{{ example.date }}</div>
+          <div class="font-mono text-sm text-primary-600 dark:text-primary-400">{{ example.encoded }}</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">{{ example.year }}</div>
         </div>
       </div>
     </div>

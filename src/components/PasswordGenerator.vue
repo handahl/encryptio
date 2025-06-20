@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <div class="text-center">
-      <h2 class="text-3xl font-bold text-gray-900 mb-2">Password Generator</h2>
-      <p class="text-gray-600 max-w-2xl mx-auto">
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Password Generator</h2>
+      <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
         Generate secure, deterministic passwords using your YubiKey's hardware-backed entropy.
         Each service gets a unique 20-character password with version control for security.
       </p>
@@ -17,8 +17,8 @@
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">Setup Your YubiKey</h3>
-        <p class="text-gray-600 mb-6">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Setup Your YubiKey</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">
           Register your YubiKey to start generating secure passwords. This creates a WebAuthn credential
           that will be used as the entropy source for password generation.
         </p>
@@ -41,8 +41,8 @@
           </button>
         </div>
         
-        <div v-if="webAuthnStore.lastError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p class="text-red-700 text-sm">{{ webAuthnStore.lastError }}</p>
+        <div v-if="webAuthnStore.lastError" class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <p class="text-red-700 dark:text-red-200 text-sm">{{ webAuthnStore.lastError }}</p>
         </div>
       </div>
     </div>
@@ -51,12 +51,12 @@
     <div v-else class="space-y-6">
       <!-- Generation Form -->
       <div class="card">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Generate Password</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Generate Password</h3>
         
         <div class="space-y-4">
           <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
-              <label for="service" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="service" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Service Name or Domain
               </label>
               <input
@@ -68,13 +68,13 @@
                 @keyup.enter="generatePassword"
                 @input="updateVersionInfo"
               />
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Enter a domain (e.g., example.com) or service name. Subdomains are automatically simplified.
               </p>
             </div>
             
             <div class="sm:w-32">
-              <label for="version" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="version" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Version
               </label>
               <input
@@ -86,7 +86,7 @@
                 class="input-field"
                 @keyup.enter="generatePassword"
               />
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {{ versionInfo }}
               </p>
             </div>
@@ -113,8 +113,8 @@
           </div>
         </div>
         
-        <div v-if="passwordStore.lastError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p class="text-red-700 text-sm">{{ passwordStore.lastError }}</p>
+        <div v-if="passwordStore.lastError" class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <p class="text-red-700 dark:text-red-200 text-sm">{{ passwordStore.lastError }}</p>
         </div>
       </div>
 
@@ -122,8 +122,8 @@
       <div v-if="currentPassword" class="card">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h3 class="text-lg font-semibold text-gray-900">Generated Password</h3>
-            <p class="text-sm text-gray-600">{{ currentService }} (Version {{ currentVersion }})</p>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Generated Password</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">{{ currentService }} (Version {{ currentVersion }})</p>
           </div>
           <div class="flex gap-2">
             <button
@@ -146,40 +146,40 @@
           {{ currentPassword }}
         </div>
         
-        <div class="mt-3 flex items-center justify-between text-sm text-gray-500">
+        <div class="mt-3 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <span>20 characters, no service name included</span>
           <span>Generated: {{ formatDate(new Date()) }}</span>
         </div>
 
         <!-- Version History -->
-        <div v-if="showVersionHistory && serviceVersions.length > 1" class="mt-4 pt-4 border-t border-gray-200">
-          <h4 class="font-medium text-gray-900 mb-3">Version History for {{ currentService }}</h4>
+        <div v-if="showVersionHistory && serviceVersions.length > 1" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+          <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-3">Version History for {{ currentService }}</h4>
           <div class="space-y-2 max-h-48 overflow-y-auto">
             <div
               v-for="pwd in serviceVersions"
               :key="`${pwd.service}-v${pwd.version}`"
-              class="flex items-center justify-between p-2 bg-gray-50 rounded text-sm"
-              :class="{ 'ring-2 ring-primary-200': pwd.version === currentVersion }"
+              class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded text-sm"
+              :class="{ 'ring-2 ring-primary-200 dark:ring-primary-800': pwd.version === currentVersion }"
             >
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
-                  <span class="font-medium">Version {{ pwd.version }}</span>
-                  <span v-if="pwd.version === currentVersion" class="text-primary-600 text-xs">(current)</span>
+                  <span class="font-medium text-gray-900 dark:text-gray-100">Version {{ pwd.version }}</span>
+                  <span v-if="pwd.version === currentVersion" class="text-primary-600 dark:text-primary-400 text-xs">(current)</span>
                 </div>
-                <div class="font-mono text-xs text-gray-600 truncate">{{ pwd.password }}</div>
-                <div class="text-xs text-gray-500">{{ formatDate(pwd.generated) }}</div>
+                <div class="font-mono text-xs text-gray-600 dark:text-gray-300 truncate">{{ pwd.password }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">{{ formatDate(pwd.generated) }}</div>
               </div>
               <div class="flex gap-1 ml-2">
                 <button
                   @click="copyToClipboard(pwd.password)"
-                  class="text-primary-600 hover:text-primary-700 text-xs"
+                  class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-xs"
                 >
                   Copy
                 </button>
                 <button
                   v-if="pwd.version !== currentVersion"
                   @click="removePasswordVersion(pwd.service, pwd.version)"
-                  class="text-red-600 hover:text-red-700 text-xs ml-2"
+                  class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-xs ml-2"
                 >
                   Delete
                 </button>
@@ -192,10 +192,10 @@
       <!-- Service List -->
       <div v-if="uniqueServices.length > 0" class="card">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">Your Services</h3>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Your Services</h3>
           <button
             @click="passwordStore.clearPasswords"
-            class="text-red-600 hover:text-red-700 text-sm font-medium"
+            class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium"
           >
             Clear All
           </button>
@@ -205,24 +205,24 @@
           <div
             v-for="service in uniqueServices"
             :key="service.name"
-            class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer"
             @click="selectService(service.name)"
           >
             <div class="flex-1 min-w-0">
-              <div class="font-medium text-gray-900">{{ service.name }}</div>
-              <div class="text-sm text-gray-600">
+              <div class="font-medium text-gray-900 dark:text-gray-100">{{ service.name }}</div>
+              <div class="text-sm text-gray-600 dark:text-gray-300">
                 {{ service.versions }} version{{ service.versions !== 1 ? 's' : '' }} • 
                 Latest: v{{ service.latestVersion }}
               </div>
-              <div class="text-xs text-gray-500">{{ formatDate(service.lastGenerated) }}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">{{ formatDate(service.lastGenerated) }}</div>
             </div>
             <div class="flex items-center gap-2 ml-3">
-              <span class="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
+              <span class="text-xs bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 px-2 py-1 rounded">
                 v{{ service.latestVersion }}
               </span>
               <button
                 @click.stop="quickCopy(service.name, service.latestVersion)"
-                class="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium"
               >
                 Copy Latest
               </button>
