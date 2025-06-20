@@ -1,11 +1,11 @@
 <div align="center">
-  <img src="public/handahl-logo.svg" alt="Handahl Labs" width="80" height="80" />
+  <img src="public/handahl-logo.svg" alt="handahl labs" width="80" height="80" />
   
   # YubiKey Security Toolkit
   
   **Browser-based password generator using WebAuthn/FIDO2**
   
-  *Developed by [Handahl Labs](https://handahl.com) in collaboration with [Bolt.new](https://bolt.new) and [Claude by Anthropic](https://claude.ai)*
+  *Developed by [handahl labs](https://handahl.org) in collaboration with [bolt.new](https://bolt.new) and [Claude by Anthropic](https://claude.ai)*
   
   [![WebAuthn](https://img.shields.io/badge/WebAuthn-FIDO2-blue)](https://webauthn.guide)
   [![Security](https://img.shields.io/badge/Security-Hardware%20Backed-green)](https://www.yubico.com)
@@ -287,8 +287,8 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ### **Collaboration Partners**
 
-- **[Handahl Labs](https://handahl.com)** - Primary development and architecture
-- **[Bolt.new](https://bolt.new)** - Development platform and tooling
+- **[handahl labs](https://handahl.org)** - Primary development and architecture
+- **[bolt.new](https://bolt.new)** - Development platform and tooling
 - **[Claude by Anthropic](https://claude.ai)** - AI-assisted development and optimization
 
 ### **Technology Credits**
@@ -304,16 +304,22 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 - **🐛 Bug Reports**: [GitHub Issues](https://github.com/handahl-labs/yubikey-security-toolkit/issues)
 - **💡 Feature Requests**: [GitHub Discussions](https://github.com/handahl-labs/yubikey-security-toolkit/discussions)
-- **📧 Security Issues**: security@handahl.com
+- **📧 Security Issues**: security@handahl.org
 - **📖 Documentation**: [Wiki](https://github.com/handahl-labs/yubikey-security-toolkit/wiki)
 
 ---
 
 <div align="center">
-  <p><strong>Built with ❤️ by Handahl Labs</strong></p>
+  <p><strong>Built with ❤️ by handahl labs</strong></p>
   <p><em>Securing the web, one password at a time.</em></p>
   
-  [![Handahl Labs](https://img.shields.io/badge/Handahl-Labs-0066cc)](https://handahl.com)
-  [![Bolt.new](https://img.shields.io/badge/Built%20with-Bolt.new-orange)](https://bolt.new)
+  [![handahl labs](https://img.shields.io/badge/handahl-labs-0066cc)](https://handahl.org)
+  [![bolt.new](https://img.shields.io/badge/Built%20with-bolt.new-orange)](https://bolt.new)
   [![Claude](https://img.shields.io/badge/AI%20Assisted-Claude-purple)](https://claude.ai)
+</div>
+
+---
+
+<div align="center">
+  <p><em>developed with european-❤️ in Taiwan</em></p>
 </div>

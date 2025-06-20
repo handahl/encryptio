@@ -5,7 +5,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center space-x-3">
-            <img src="/handahl-logo.svg" alt="Handahl Labs" class="w-8 h-8" />
+            <img src="/handahl-logo.svg" alt="handahl labs" class="w-8 h-8" />
             <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">YubiKey Security Toolkit</h1>
           </div>
           

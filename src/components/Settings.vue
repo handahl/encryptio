@@ -190,11 +190,11 @@
     <!-- About -->
     <div class="card">
       <div class="flex items-start space-x-4 mb-4">
-        <img src="/handahl-logo.svg" alt="Handahl Labs" class="w-12 h-12 flex-shrink-0" />
+        <img src="/handahl-logo.svg" alt="handahl labs" class="w-12 h-12 flex-shrink-0" />
         <div>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">About YubiKey Security Toolkit</h3>
           <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
-            Developed by <strong>Handahl Labs</strong> in collaboration with <strong>Bolt.new</strong> and <strong>Claude by Anthropic</strong>
+            Developed by <strong>handahl labs</strong> in collaboration with <strong>bolt.new</strong> and <strong>Claude by Anthropic</strong>
           </p>
         </div>
       </div>
@@ -217,8 +217,8 @@
         
         <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
           <div class="flex flex-wrap gap-4 text-primary-600 dark:text-primary-400">
-            <a href="https://handahl.com" target="_blank" class="hover:underline font-medium">Handahl Labs</a>
-            <a href="https://bolt.new" target="_blank" class="hover:underline">Bolt.new</a>
+            <a href="https://handahl.org" target="_blank" class="hover:underline font-medium">handahl labs</a>
+            <a href="https://bolt.new" target="_blank" class="hover:underline">bolt.new</a>
             <a href="https://claude.ai" target="_blank" class="hover:underline">Claude by Anthropic</a>
             <a href="https://webauthn.guide" target="_blank" class="hover:underline">WebAuthn Guide</a>
             <a href="https://www.yubico.com" target="_blank" class="hover:underline">YubiKey</a>
@@ -226,10 +226,17 @@
         </div>
         
         <div class="pt-3 text-xs text-gray-500 dark:text-gray-400">
-          <p>© 2025 Handahl Labs. Built with modern web standards for maximum security and privacy.</p>
+          <p>© 2025 handahl labs. Built with modern web standards for maximum security and privacy.</p>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- European Heart Message -->
+  <div class="mt-8 text-center">
+    <p class="text-sm text-gray-500 dark:text-gray-400">
+      developed with european-❤️ in Taiwan
+    </p>
   </div>
 </template>
 
@@ -331,7 +338,7 @@ const exportData = () => {
     exportDate: new Date().toISOString(),
     version: '1.0.0',
     application: 'YubiKey Security Toolkit',
-    developer: 'Handahl Labs'
+    developer: 'handahl labs'
   }
   
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })

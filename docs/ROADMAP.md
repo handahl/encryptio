@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="../public/handahl-logo.svg" alt="Handahl Labs" width="60" height="60" />
+  <img src="../public/handahl-logo.svg" alt="handahl labs" width="60" height="60" />
   
   # YubiKey Security Toolkit - Roadmap
   
-  *Developed by [Handahl Labs](https://handahl.com) in collaboration with [Bolt.new](https://bolt.new) and [Claude by Anthropic](https://claude.ai)*
+  *Developed by [handahl labs](https://handahl.org) in collaboration with [bolt.new](https://bolt.new) and [Claude by Anthropic](https://claude.ai)*
 </div>
 
 ---
@@ -380,12 +380,16 @@ gantt
   
 ## 🚀 **Ready to Shape the Future of Security?**
 
-*This roadmap represents our commitment to advancing hardware-backed security through innovative web technologies. Built on the foundation of collaboration between Handahl Labs, Bolt.new, and Claude by Anthropic, we're creating the next generation of password security tools.*
+*This roadmap represents our commitment to advancing hardware-backed security through innovative web technologies. Built on the foundation of collaboration between handahl labs, bolt.new, and Claude by Anthropic, we're creating the next generation of password security tools.*
 
 **Join us in securing the digital world, one password at a time.**
 
-[![Handahl Labs](https://img.shields.io/badge/Handahl-Labs-0066cc)](https://handahl.com)
-[![Bolt.new](https://img.shields.io/badge/Built%20with-Bolt.new-orange)](https://bolt.new)
+[![handahl labs](https://img.shields.io/badge/handahl-labs-0066cc)](https://handahl.org)
+[![bolt.new](https://img.shields.io/badge/Built%20with-bolt.new-orange)](https://bolt.new)
 [![Claude](https://img.shields.io/badge/AI%20Assisted-Claude-purple)](https://claude.ai)
+
+---
+
+<p><em>developed with european-❤️ in Taiwan</em></p>
 
 </div>
