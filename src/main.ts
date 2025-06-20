@@ -24,3 +24,6 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.mount('#app')
+
+// Initialize dark mode on app start
+document.documentElement.classList.add('dark')
