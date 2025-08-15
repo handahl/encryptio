@@ -15,43 +15,39 @@
   import Generator from './components/Generator.svelte'; // Component for codename generation
   import Spinner from './components/Spinner.svelte';   // Reusable loading spinner
 
-  // In Svelte 5, components imported this way are directly the callable functions.
-  // We'll let TypeScript infer the type or use a simpler union type.
-  let CurrentScreenComponent: typeof Auth | typeof Generator | null = null;
+  // No need for CurrentScreenComponent state. We will use direct {#if} blocks.
 
-  // Use a Svelte 5 effect to react to changes in authStore and update the component to render.
+  // Reactive subscription to the authStore for direct use in template.
+  // The '$authStore' syntax automatically subscribes and updates this local variable
+  // whenever the store's state changes.
+  // We explicitly declare authState to prevent potential "unknown" type issues in complex reactivity
+  let authState = $authStore;
   $effect(() => {
-    // If the authStore is still loading, we don't render a specific screen component yet.
-    if ($authStore.isLoading) {
-      CurrentScreenComponent = null;
-    } else if (!$authStore.isKeyRegistered) {
-      // If no security key is registered, show the authentication/registration screen.
-      CurrentScreenComponent = Auth;
-    } else {
-      // If a security key is registered, show the main generator screen.
-      CurrentScreenComponent = Generator;
-    }
+    authState = $authStore; // Keep local authState in sync with global store
   });
 
 </script>
 
 <!-- The main application container -->
 <div class="main-app-container">
-  {#if $authStore.isLoading}
+  {#if authState.isLoading}
     <!-- Display a global loading overlay when the authStore is in a loading state. -->
     <div class="loading-overlay">
       <Spinner />
       <p class="loading-message">Initializing system...</p>
     </div>
-  {:else if CurrentScreenComponent}
-    <!-- Dynamically render the determined component (Auth or Generator) using svelte:component. -->
-    <svelte:component this={CurrentScreenComponent} />
+  {:else if !authState.isKeyRegistered}
+    <!-- If no security key is registered, display the Auth component directly. -->
+    <Auth />
+  {:else}
+    <!-- If a security key is registered, display the Generator component directly. -->
+    <Generator />
   {/if}
 
   <!-- Global error display, visible at the bottom regardless of which component is active -->
-  {#if $authStore.error}
+  {#if authState.error}
     <div class="global-error terminal-error">
-      <pre>System Error: {$authStore.error}</pre>
+      <pre>System Error: {authState.error}</pre>
       <button onclick={() => authStore.clearError()} class="clear-error-button">
         [Clear Error]
       </button>
