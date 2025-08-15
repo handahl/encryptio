@@ -1,0 +1,157 @@
+/**
+ * @file styles.css
+ * @description Global styles for the Encryptio Generator application.
+ * This file defines the base CSS variables for theming, font definitions,
+ * and essential layout rules to create the "Neo-Terminal" aesthetic.
+ * It also includes styles for basic HTML elements and utility classes.
+ * @author Mr. Robot
+ * @version 1.0.0
+ */
+
+/* Import a monospace font. Fira Code is excellent for terminal aesthetics. */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+/* CSS Variables for Theming */
+:root {
+    /* Color Palette */
+    --color-bg-page: #000000;         /* Pure black background for the entire page */
+    --color-bg-terminal: #1a1a1a;     /* Dark gray background for the terminal window */
+    --color-bg-header-input: #0d0d0d; /* Slightly darker gray for terminal header and input areas */
+    --color-fg-text: #e0e0e0;         /* Soft white for main foreground text */
+    --color-accent-green: #00b300;    /* Muted neon green for prompts, accents, and highlights */
+    --color-accent-green-dark: #004d00; /* Darker green for subtle borders and scrollbars */
+    --color-border-glow: #006600;     /* Slightly stronger green for the terminal window's glow effect */
+    --color-error: #ff4500;           /* Orange-red for error messages */
+    --color-spinner: #00b300;         /* Color for loading spinner */
+
+
+    /* Typography */
+    --font-family-mono: 'Fira Code', 'Courier New', monospace; /* Monospaced font stack */
+    --font-size-base: 1rem; /* Base font size */
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+}
+
+/* Global Box Sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Base Body Styles */
+body {
+    background-color: var(--color-bg-page);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-base);
+    color: var(--color-fg-text);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* Ensure body takes full viewport height */
+    display: flex; /* Use flexbox for centering content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    overflow: hidden; /* Prevent body scrollbars */
+    -webkit-font-smoothing: antialiased; /* Smoother fonts for Webkit browsers */
+    -moz-osx-font-smoothing: grayscale; /* Smoother fonts for Firefox */
+}
+
+/* Terminal Window Styling */
+.terminal-window {
+    width: 95%; /* Responsive width */
+    max-width: 800px; /* Maximum width for consistency */
+    min-height: 500px; /* Minimum height to ensure content visibility */
+    background-color: var(--color-bg-terminal);
+    border: 1px solid var(--color-accent-green-dark); /* Subtle green border */
+    border-radius: 8px; /* Rounded corners for the terminal box */
+    box-shadow: 0 0 15px var(--color-border-glow); /* Glowing effect */
+    display: flex;
+    flex-direction: column; /* Stack header, output, and input vertically */
+    overflow: hidden; /* Crucial for controlling internal scrolling */
+}
+
+/* Terminal Header */
+.terminal-header {
+    background-color: var(--color-bg-header-input);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--color-accent-green-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--color-accent-green);
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+/* Terminal Output Area */
+.terminal-output {
+    flex-grow: 1; /* Allows output area to fill available space */
+    padding: var(--spacing-md);
+    overflow-y: auto; /* Enable vertical scrolling */
+    white-space: pre-wrap; /* Preserve whitespace and wrap text */
+    word-wrap: break-word; /* Break long words for better wrapping */
+    line-height: 1.0; /* Tight line spacing for a compact terminal look */
+    /* Custom scrollbar styling (Webkit) */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--color-accent-green-dark) var(--color-bg-terminal); /* Firefox */
+}
+
+.terminal-output::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-output::-webkit-scrollbar-track {
+    background: var(--color-bg-terminal);
+}
+
+.terminal-output::-webkit-scrollbar-thumb {
+    background-color: var(--color-accent-green-dark);
+    border-radius: 10px;
+    border: 2px solid var(--color-bg-terminal);
+}
+
+/* Preformatted text within output (e.g., console lines) */
+.terminal-output pre {
+    margin: 0; /* Remove default margins to control spacing directly */
+    line-height: inherit; /* Inherit line-height from parent for consistency */
+}
+
+/* Command Input Line */
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-top: 1px solid var(--color-accent-green-dark);
+    background-color: var(--color-bg-header-input);
+    flex-shrink: 0; /* Prevent input area from shrinking */
+}
+
+.terminal-prompt {
+    color: var(--color-accent-green);
+    margin-right: var(--spacing-xs);
+    white-space: nowrap; /* Prevent prompt from wrapping */
+}
+
+.terminal-input {
+    flex-grow: 1; /* Allow input field to take available width */
+    background: transparent;
+    border: none;
+    outline: none; /* Remove default focus outline */
+    color: var(--color-fg-text);
+    font-family: var(--font-family-mono);
+    font-size: 1em; /* Inherit font size */
+    caret-color: var(--color-accent-green); /* Blinking cursor color */
+    padding: 0; /* Remove default input padding */
+}
+
+/* Error Message Styling */
+.terminal-error {
+    color: var(--color-error);
+    padding: var(--spacing-xs) var(--spacing-md) var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
