@@ -15,28 +15,20 @@
   import Generator from './components/Generator.svelte'; // Component for codename generation
   import Spinner from './components/Spinner.svelte';   // Reusable loading spinner
 
-  // No need for CurrentScreenComponent state. We will use direct {#if} blocks.
-
-  // Reactive subscription to the authStore for direct use in template.
-  // The '$authStore' syntax automatically subscribes and updates this local variable
-  // whenever the store's state changes.
-  // We explicitly declare authState to prevent potential "unknown" type issues in complex reactivity
-  let authState = $authStore;
-  $effect(() => {
-    authState = $authStore; // Keep local authState in sync with global store
-  });
+  // No need for a local authState variable and $effect to mirror $authStore.
+  // We can directly use $authStore in the template.
 
 </script>
 
 <!-- The main application container -->
 <div class="main-app-container">
-  {#if authState.isLoading}
+  {#if $authStore.isLoading}
     <!-- Display a global loading overlay when the authStore is in a loading state. -->
     <div class="loading-overlay">
       <Spinner />
       <p class="loading-message">Initializing system...</p>
     </div>
-  {:else if !authState.isKeyRegistered}
+  {:else if !$authStore.isKeyRegistered}
     <!-- If no security key is registered, display the Auth component directly. -->
     <Auth />
   {:else}
@@ -45,9 +37,9 @@
   {/if}
 
   <!-- Global error display, visible at the bottom regardless of which component is active -->
-  {#if authState.error}
+  {#if $authStore.error}
     <div class="global-error terminal-error">
-      <pre>System Error: {authState.error}</pre>
+      <pre>System Error: {$authStore.error}</pre>
       <button onclick={() => authStore.clearError()} class="clear-error-button">
         [Clear Error]
       </button>

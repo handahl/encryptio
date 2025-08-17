@@ -73,6 +73,7 @@ async function deriveMasterSeed(authenticatorData: Uint8Array, domainString: str
     const masterSeed = await crypto.subtle.deriveBits(
         {
             name: 'HKDF',
+            hash: 'SHA-256', // CRITICAL FIX: Specify the hash algorithm for HKDF
             salt: salt,
             info: encoder.encode('encryptio-codename-generation'), // Contextual info for derivation
         },
@@ -112,40 +113,50 @@ export async function generateCodename(
 ): Promise<GeneratedCodename> {
     try {
         // Step 1: Generate a deterministic challenge from the domain string.
+        console.log('[CryptoService] Generating deterministic challenge...'); // DEBUG LOG
         const challenge = await generateDeterministicChallenge(domainString);
 
         // Step 2: Authenticate with the security key to get authenticator data.
+        console.log('[CryptoService] Authenticating with security key...'); // DEBUG LOG
         const authenticatorDataRaw = await webauthnService.authenticateSecurityKey(
             credentialId,
             challenge
         );
 
         if (!authenticatorDataRaw) {
-            throw new Error('Failed to get authenticator data from security key.');
+            throw new Error('Failed to get authenticator data from security key. Operation cancelled or timed out.');
         }
+        console.log('[CryptoService] Received raw authenticator data.'); // DEBUG LOG
 
         // Step 3: Process authenticator data to remove non-determinism (signature counter).
+        console.log('[CryptoService] Making authenticator data deterministic...'); // DEBUG LOG
         const deterministicAuthData = getDeterministicAuthenticatorData(authenticatorDataRaw);
 
         // Step 4: Derive the MasterSeed using HKDF with deterministic authenticator data and domain string.
+        console.log('[CryptoService] Deriving MasterSeed using HKDF...'); // DEBUG LOG
         const masterSeed = await deriveMasterSeed(deterministicAuthData, domainString);
+        console.log('[CryptoService] MasterSeed derived successfully.'); // DEBUG LOG
 
         // Step 5: Select Chinese characters deterministically from the MasterSeed.
-        // Each character selection uses a distinct 4-byte segment of the MasterSeed.
-        // MasterSeed is 64 bytes, so we have plenty of segments for multiple characters.
+        console.log('[CryptoService] Selecting Chinese characters...'); // DEBUG LOG
         const char1 = selectCharacter(masterSeed.slice(0, 4));    // First 4 bytes
         const char2 = selectCharacter(masterSeed.slice(4, 8));    // Next 4 bytes
         const char3 = selectCharacter(masterSeed.slice(8, 12));   // Next 4 bytes
+        console.log('[CryptoService] Characters selected.'); // DEBUG LOG
+
 
         // Step 6: Format the final output as characters and a Pinyin note.
         const chineseChar = `${char1.char}${char2.char}${char3.char}`;
         const pinyinNote = `${char1.pinyin} ${char2.pinyin} ${char3.pinyin} ${char1.tone}${char2.tone}${char3.tone}`;
 
+        console.log('[CryptoService] Codename generation complete.'); // DEBUG LOG
         return { chineseChar, pinyinNote };
 
     } catch (error: any) {
-        console.error('Codename generation failed:', error);
-        throw new Error(`Codename generation failed: ${error.message || 'Unknown error.'}`);
+        // Log the full error object for debugging purposes
+        console.error('[CryptoService] Codename generation failed with error:', error); // DEBUG LOG
+        // Re-throw a user-friendly error message
+        throw new Error(`Codename generation failed: ${error.message || 'An unknown error occurred.'}`);
     }
 }
 

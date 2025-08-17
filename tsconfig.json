@@ -11,10 +11,11 @@
     "strict": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "preserve",
     "jsxImportSource": "svelte", // Important for Svelte 5
-    "types": ["svelte"] // Important for Svelte 5
+    "types": ["svelte"], // Important for Svelte 5
+    "composite": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]

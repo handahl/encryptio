@@ -13,7 +13,7 @@
   import * as cryptoService from '../services/crypto.service'; // Codename generation logic
   import Header from './Header.svelte'; // Terminal header
   import Prompt from './Prompt.svelte'; // Terminal prompt
-  import Spinner from './Spinner.svelte'; // CORRECTED: Spinner import path
+  import Spinner from './Spinner.svelte'; // Loading spinner
 
   // Reactive state variables for the component using Svelte 5 $state rune.
   let currentCommand: string = $state(''); // Binds to the input field for domain strings, now reactive
@@ -26,7 +26,7 @@
 
   // Reactively subscribe to the authStore for the current credentialId and username.
   // This allows the component to react to authentication state changes.
-  let authState = {}; // Placeholder; actual properties accessed via $authStore
+  let authState = {};
   authStore.subscribe(state => {
     authState = state;
   });
@@ -37,7 +37,8 @@
    * @param message The string message to add to the history.
    */
   function addMessageToHistory(message: string) {
-    terminalHistory.push(message);
+    // CRITICAL FIX: Assign a new array reference to trigger Svelte 5 reactivity.
+    terminalHistory = [...terminalHistory, message];
     // Use setTimeout with 0ms to allow the DOM to update before attempting to scroll.
     // This ensures `scrollHeight` is accurate after the new message is rendered.
     setTimeout(() => {
@@ -54,8 +55,10 @@
    */
   const handleSubmit = async () => {
     const command = currentCommand.trim();
+    console.log('[Generator] handleSubmit called with command:', command); // DEBUG LOG
+
     if (!command) {
-      // If the command is empty, just clear the input and refocus.
+      console.log('[Generator] Command is empty, clearing input.'); // DEBUG LOG
       currentCommand = '';
       if (commandInput) {
         commandInput.focus();
@@ -64,15 +67,18 @@
     }
 
     // Add the user's command to the terminal history.
-    addMessageToHistory(`${($authStore as any).username || 'anon'}@encryptio:~$ ${command}`);
+    addMessageToHistory(`${$authStore.username || 'anon'}@encryptio:~$ ${command}`);
     currentCommand = ''; // Clear the input field immediately after submission.
 
     // Clear any previous error messages.
     currentError = null;
+    authStore.clearError(); // Clear global error too
 
     // Set loading state to true while generation is in progress.
     isLoading = true;
     authStore.setLoading(true); // Also update global loading state
+    addMessageToHistory('...'); // Indicate processing
+    console.log('[Generator] Loading state set to true. Spinner should be visible.'); // DEBUG LOG
 
     try {
       // Ensure that a security key is registered before attempting generation.
@@ -80,32 +86,43 @@
         const errorMessage = 'Error: No security key registered. Please refresh the page and register your key.';
         addMessageToHistory(errorMessage);
         currentError = errorMessage;
+        authStore.setError(errorMessage); // Set global error as well
+        console.error('[Generator] Error: No credentialId found. Aborting generation.'); // DEBUG LOG
         return;
       }
+      console.log(`[Generator] Using credential ID: ${$authStore.credentialId.substring(0, 8)}...`); // DEBUG LOG
 
-      // Call the crypto service to generate the codename.
-      // We pass the stored credentialId and the user-provided domain string.
+      // Inform the user about the next step
       addMessageToHistory('Generating codename...');
+      addMessageToHistory('**ACTION REQUIRED:** Please touch your security key now to authorize the operation.');
+      addMessageToHistory('Note: This operation has a 60-second timeout. If no key interaction, an error will appear.');
+      addMessageToHistory(''); // Add a blank line for visual separation
+
+      console.log('[Generator] Calling cryptoService.generateCodename...'); // DEBUG LOG
       const { chineseChar, pinyinNote } = await cryptoService.generateCodename(
         $authStore.credentialId,
         command
       );
+      console.log('[Generator] Codename generation successful!'); // DEBUG LOG
 
       // Display the generated codename and its Pinyin note in history.
       addMessageToHistory(`Generated Codename: ${chineseChar}`);
       addMessageToHistory(`Note: ${pinyinNote}`);
       addMessageToHistory(''); // Add a blank line for visual separation
+
     } catch (e: any) {
       // Catch and display any errors that occur during the generation process.
-      currentError = `Generation failed: ${e.message || 'An unknown error occurred.'}`;
-      addMessageToHistory(currentError);
-      console.error('Codename generation error:', e);
+      const errorMessage = `Generation failed: ${e.message || 'An unknown error occurred.'}`;
+      currentError = errorMessage;
+      authStore.setError(errorMessage); // Set global error as well
+      addMessageToHistory(errorMessage);
+      console.error('[Generator] Caught error during generation:', e); // DEBUG LOG
     } finally {
       // Always reset loading state and ensure the input field is focused
       // after the command has been processed, whether it succeeded or failed.
+      console.log('[Generator] Finally block: Resetting loading state and refocusing input.'); // DEBUG LOG
       isLoading = false;
       authStore.setLoading(false);
-      // `tick()` ensures that the DOM has updated before we attempt to focus.
       await tick();
       if (commandInput) {
         commandInput.focus();
@@ -124,6 +141,7 @@
     if (commandInput) {
       commandInput.focus();
     }
+    console.log('[Generator] Component mounted. Input focused.'); // DEBUG LOG
   });
 </script>
 
@@ -166,4 +184,12 @@
     </div>
   {/if}
 </div>
-wC
+
+<style>
+  /* This style block ensures the input field handles overflow gracefully. */
+  .terminal-input {
+    overflow: hidden; /* Hide content that overflows */
+    white-space: nowrap; /* Keep text on a single line */
+    text-overflow: ellipsis; /* Add "..." for overflowing text */
+  }
+</style>
